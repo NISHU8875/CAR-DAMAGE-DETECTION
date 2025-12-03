@@ -446,10 +446,17 @@ if uploaded_files:
                     st.info(f"🎯 **Result:** {prediction}")
                     
                     # Add damage badge based on prediction
-                    if "damage" in prediction.lower() and "no" not in prediction.lower():
+                    prediction_lower = prediction.lower()
+                    
+                    # Check if "no damage" or "no-damage" is explicitly mentioned
+                    if "no damage" in prediction_lower or "no-damage" in prediction_lower or "nodamage" in prediction_lower:
+                        st.markdown('<span class="damage-badge no-damage">✓ No Damage Detected</span>', unsafe_allow_html=True)
+                    # Otherwise, if any damage keyword is present, show damage detected
+                    elif any(keyword in prediction_lower for keyword in ["damage", "crushed", "dent", "scratch", "broken", "cracked", "smashed"]):
                         st.markdown('<span class="damage-badge damage-detected">⚠️ Damage Detected</span>', unsafe_allow_html=True)
                     else:
-                        st.markdown('<span class="damage-badge no-damage">✓ No Damage</span>', unsafe_allow_html=True)
+                        # Default to showing the prediction without badge if unclear
+                        pass
                         
             except Exception as e:
                 st.error(f"❌ Prediction error: {e}")
